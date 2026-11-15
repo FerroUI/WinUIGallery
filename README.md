@@ -7,6 +7,8 @@ module on a canvas.
 
 **Open it in the browser:** https://ferroui.github.io/WinUIGallery/
 
+![The Button page of the WinUI Gallery in the browser](docs/images/winui-gallery-browser.jpg)
+
 The gallery is the sample `samples/WinUIGallery` of FerroUI
 ([its README](https://github.com/wieslawsoltes/FerroUI/blob/main/samples/WinUIGallery/README.md)),
 built from the sources of the FerroUI submodule of this repository. This repository adds only what
