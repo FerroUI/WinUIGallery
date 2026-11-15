@@ -1,0 +1,29 @@
+name: CI
+
+# The browser site of the WinUI Gallery and its GitHub Pages deployment, with the shared application
+# workflow of FerroUI (FerroUI/docs/apps.md): the conventions, the test of the host, the site built
+# from the sources of the submodule, a smoke run of the site in headless Chrome, and the deployment
+# from runs of main.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  app:
+    uses: wieslawsoltes/FerroUI/.github/workflows/app.yml@main
+    with:
+      test: |
+        -p winui-gallery-browser
+      browser-package: winui-gallery-browser
