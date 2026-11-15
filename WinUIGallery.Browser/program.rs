@@ -3,9 +3,9 @@
 //! The gallery is the sample `samples/WinUIGallery` of the FerroUI submodule, built from its sources.
 //! The host page (`wwwroot/main.js`) creates the WebAssembly module, hands it to the script side of
 //! the platform and calls [`run_main`] with the address of the page. The application class of the
-//! gallery (`winui_gallery::App`) registers the XAML types, the WinUI theme and the styles of the
-//! inking controls; it shows its view in a window of the desktop lifetime only, so this host makes
-//! the gallery view the main view of the single-view lifetime of the browser.
+//! gallery (`winui_gallery::App`) is part of its desktop and capture builds only; [`GalleryApp`]
+//! registers what it registers (the XAML types, the WinUI theme and the styles of the inking
+//! controls), and the gallery view is the main view of the single-view lifetime of the browser.
 //!
 //! The browser has no system fonts: the embedded Inter font is the default family. The query string
 //! selects the renderer (`?RenderingMode=Software2D` draws without WebGL) and the first page
@@ -15,6 +15,53 @@
 
 #[cfg(target_os = "emscripten")]
 use wasm_bindgen::prelude::*;
+
+use ferroui_base::{ferro_class, ferro_class_info, ferro_impl_classes, instantiate, FerroObjectImpl, Ref};
+use ferroui_controls::{Application, ApplicationImpl, NewApplication};
+use std::rc::Rc;
+
+/// The application class of the browser site: the registrations of the gallery's own application
+/// class (`samples/WinUIGallery/app.rs`), without its desktop window.
+#[repr(C)]
+pub struct GalleryApp {
+    base: Application,
+}
+
+ferro_class!(GalleryApp: Application);
+ferro_class_info!(GalleryApp { new: GalleryApp::new });
+ferro_impl_classes!(GalleryApp: FerroObjectImpl);
+
+impl GalleryApp {
+    pub fn construct() -> Self {
+        Self { base: Application::construct() }
+    }
+
+    pub fn new() -> Ref<Self> {
+        instantiate(Self::construct())
+    }
+}
+
+impl NewApplication for GalleryApp {
+    fn new_application() -> Ref<Self> {
+        Self::new()
+    }
+}
+
+impl ApplicationImpl for GalleryApp {
+    fn initialize(this: &Self) {
+        ferroui_markup_xaml::register_types();
+        ferroui_themes_winui::register_types();
+        this.styles().add(ferroui_themes_winui::WinUITheme::new().as_style());
+        // The control themes of the InkToolbar (InkCanvas page) are in the inking crate, after the
+        // WinUI theme whose resources they use.
+        ferroui_controls_inking::register_types();
+        let inking = ferroui_markup_xaml::styling::StyleInclude::new(None);
+        inking.set_source(
+            ferroui_base::utilities::UriRef::parse("ferres://FerroUI.Controls.Inking/Themes/WinUI.xaml").ok(),
+        );
+        this.styles().add(inking as Rc<dyn ferroui_base::styling::IStyle>);
+    }
+}
 
 /// The value of `name` in the query string of `href`.
 #[cfg_attr(not(target_os = "emscripten"), allow(dead_code))]
@@ -32,18 +79,16 @@ fn query_value<'a>(href: &'a str, name: &str) -> Option<&'a str> {
 pub fn run_main(href: &str) {
     use ferroui_base::logging::LogEventLevel;
     use ferroui_base::media::FontManagerOptions;
-    use ferroui_base::Ref;
     use ferroui_browser::{BrowserAppBuilder, BrowserPlatformOptions, BrowserRenderingMode};
-    use ferroui_controls::{AppBuilder, Application, Control, TextBlock};
+    use ferroui_controls::{AppBuilder, Control, TextBlock};
     use ferroui_fonts_inter::AppBuilderExtension;
     use ferroui_markup_xaml_winui::WinUIXamlOptions;
-    use std::rc::Rc;
 
     let mut options = BrowserPlatformOptions::default();
     if query_value(href, "RenderingMode") == Some("Software2D") {
         options.rendering_mode = vec![BrowserRenderingMode::Software2D];
     }
-    AppBuilder::configure::<winui_gallery::App>()
+    AppBuilder::configure::<GalleryApp>()
         .with_inter_font()
         .with(Rc::new(FontManagerOptions {
             default_family_name: Some("fonts:Inter#Inter".to_owned()),

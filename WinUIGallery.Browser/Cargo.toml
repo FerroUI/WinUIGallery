@@ -19,11 +19,15 @@ name = "winui-gallery-browser"
 path = "program.rs"
 
 [dependencies]
-# The gallery is the sample of the submodule, built from its sources; `theme` brings the WinUI theme
-# its application class registers.
-winui-gallery = { path = "../FerroUI/samples/WinUIGallery", features = ["theme"] }
+# The gallery is the sample of the submodule, built from its sources. Its application class is part of
+# its desktop and capture builds only; the application class of this host registers what that one
+# does (the XAML types, the WinUI theme and the styles of the inking controls).
+winui-gallery = { path = "../FerroUI/samples/WinUIGallery" }
 ferroui-base = { workspace = true }
 ferroui-controls = { workspace = true }
+ferroui-controls-inking = { workspace = true }
+ferroui-markup-xaml = { workspace = true }
+ferroui-themes-winui = { workspace = true }
 ferroui-browser = { workspace = true }
 ferroui-fonts-inter = { workspace = true }
 ferroui-markup-xaml-winui = { workspace = true }
