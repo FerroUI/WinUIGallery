@@ -1563,7 +1563,6 @@ dependencies = [
  "ferroui-media-video-linux",
  "ferroui-media-video-windows",
  "ferroui-media-windows",
- "ferroui-themes-winui",
 ]
 
 [[package]]
@@ -1573,8 +1572,11 @@ dependencies = [
  "ferroui-base",
  "ferroui-browser",
  "ferroui-controls",
+ "ferroui-controls-inking",
  "ferroui-fonts-inter",
+ "ferroui-markup-xaml",
  "ferroui-markup-xaml-winui",
+ "ferroui-themes-winui",
  "wasm-bindgen",
  "winui-gallery",
 ]
