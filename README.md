@@ -5,7 +5,7 @@ This repository is the source and the deployment of the browser site of the WinU
 gallery shows the WinUI controls of FerroUI with their samples, in the WinUI theme, as a WebAssembly
 module on a canvas.
 
-**Open it in the browser:** https://ferroui.github.io/WinUIGallery/
+**Open it in the browser:** https://ferroui.com/WinUIGallery/
 
 ![The Button page of the WinUI Gallery in the browser](docs/images/winui-gallery-browser.jpg)
 
