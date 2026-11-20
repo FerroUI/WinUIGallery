@@ -132,10 +132,10 @@ mod tests {
 
     #[test]
     fn the_query_string_selects_the_renderer_and_the_page() {
-        let href = "https://ferroui.github.io/WinUIGallery/?RenderingMode=Software2D&page=Button#top";
+        let href = "https://ferroui.com/WinUIGallery/?RenderingMode=Software2D&page=Button#top";
         assert_eq!(query_value(href, "RenderingMode"), Some("Software2D"));
         assert_eq!(query_value(href, "page"), Some("Button"));
         assert_eq!(query_value(href, "theme"), None);
-        assert_eq!(query_value("https://ferroui.github.io/WinUIGallery/", "page"), None);
+        assert_eq!(query_value("https://ferroui.com/WinUIGallery/", "page"), None);
     }
 }
